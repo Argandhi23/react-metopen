@@ -3,9 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 export default function Checkout() {
-  const { items, totalPrice } = useCart();
+  const { items, totalPrice, isLoaded } = useCart();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (isLoaded && items.length === 0) {
+      navigate('/cart');
+    }
+  }, [isLoaded, items.length, navigate]);
 
   useEffect(() => {
     document.title = 'Checkout - Toko Online';
@@ -21,8 +27,7 @@ export default function Checkout() {
     }, 1000);
   };
 
-  if (items.length === 0) {
-    navigate('/cart');
+  if (!isLoaded || items.length === 0) {
     return null;
   }
 
